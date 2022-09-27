@@ -6,10 +6,13 @@ class Monde:
     def __init__(self, largeur, hauteur):
         self.largeur = largeur
         self.hauteur = hauteur
-        self.grille = [[ None for _ in range(largeur)] for _ in range(hauteur)]
+        self.grille = [["_" for _ in range(largeur)] for _ in range(hauteur)]
     
     def afficher_monde(self):
-        print("test")
+        for ligne in self.grille:
+            print(ligne)
+            """for case in ligne:
+                print(case)"""
         pass
 
     def peupler(self, nb_poisson, nb_requin):
@@ -30,3 +33,7 @@ class Poisson:
         
     def vivre_une_journee(self, monde):
         pass
+
+
+monde = Monde(50, 40)
+monde.afficher_monde()
