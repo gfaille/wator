@@ -28,9 +28,10 @@ class Monde:
     def jouer_un_tour(self):
         pass
 
+
 class Poisson:
     def __init__(self, x, y):
-        pass
+        
     
     def deplacement_possible(self, monde):
         pass
@@ -40,6 +41,9 @@ class Poisson:
         
     def vivre_une_journee(self, monde):
         pass
+
+
+class Requin:
 
 
 monde = Monde(10, 8)
