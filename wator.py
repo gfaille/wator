@@ -1,4 +1,4 @@
-from random import randint, choice
+from random import randint, choice, random
 from time import sleep
 import os
 
@@ -22,8 +22,33 @@ class Monde:
         :param nb_poisson: Nombre de poisson à afficher dans la grille
         :param nb_requin: Nombre de requin à afficher dans la grille
         """
-        position = randint(self.grille)
-        return position
+        
+        for _ in range(nb_poisson): # Itère tout les poissons
+
+            while True:
+
+                x_random = randint(0, self.largeur - 1)
+                y_random = randint(0, self.hauteur - 1)
+
+                if self.grille[y_random][x_random] == "_" :
+                    self.grille[y_random][x_random] = Poisson(x_random, y_random)
+                    break
+
+
+
+        for _ in range(nb_requin):  # Itère tout les requins
+
+            while True:
+
+                x_random = randint(0, self.largeur - 1)
+                y_random = randint(0, self.hauteur - 1)
+
+                if self.grille[y_random][x_random] == "_" :
+                    self.grille[y_random][x_random] = Requin(x_random, y_random)
+                    break
+            
+
+            
     
     def jouer_un_tour(self):
         pass
@@ -31,7 +56,9 @@ class Monde:
 
 class Poisson:
     def __init__(self, x, y):
-        
+        self.x = x
+        self.y = y
+        self.compteur_repro = 0
     
     def deplacement_possible(self, monde):
         pass
@@ -42,11 +69,37 @@ class Poisson:
     def vivre_une_journee(self, monde):
         pass
 
-
 class Requin:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y 
+        self.requin_repro = 0
+        self.energie = 6
 
+
+    
+    def deplacement_possible(self, monde):
+        pass
+    
+    def se_deplacer(self, monde):
+        pass
+        
+    def vivre_une_journee(self, monde):
+        pass
 
 monde = Monde(10, 8)
 monde.afficher_monde()
 
-print(monde.peupler)
+#poisson = Poisson(4, 6)
+
+#requin = Requin(2, 5)
+
+#Monde.peupler(requin, 2, 4)
+#print(poisson)
+#print(requin)
+
+#Monde.peupler(monde, 2, 5)
+
+monde.peupler(1, 1)
+
+monde.afficher_monde()
