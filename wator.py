@@ -43,8 +43,17 @@ class Requin:
 
     
     def deplacement_possible(self, monde):
-        pass
-    
+        list = []
+        if monde[self.y + 1][self.x] == "_":
+            list.append[monde[self.y][self.x]]
+        if monde[self.y - 1][self.x] == "_":
+            list.append[monde[self.y][self.x]]
+        if monde[self.y][self.x + 1] :
+            list.append[monde[self.y][self.x + 1]]
+        if monde[monde[self.y][self.x - 1]] :
+            list.append[monde[self.y][self.x - 1]]
+
+
     def se_deplacer(self, monde):
         pass
         
