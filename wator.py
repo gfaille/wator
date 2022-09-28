@@ -7,16 +7,23 @@ class Monde:
         self.largeur = largeur
         self.hauteur = hauteur
         self.grille = [["_" for _ in range(largeur)] for _ in range(hauteur)]
+
+    def __del__(self):
+        pass
     
     def afficher_monde(self):
         for ligne in self.grille:
             print(ligne)
             """for case in ligne:
                 print(case)"""
-        pass
 
-    def peupler(self, nb_poisson, nb_requin):
-        pass
+    def peupler(self, nb_poisson:int, nb_requin:int):
+        """Méthode pour initialiser la position des thon et des requins
+        :param nb_poisson: Nombre de poisson à afficher dans la grille
+        :param nb_requin: Nombre de requin à afficher dans la grille
+        """
+        position = randint(self.grille)
+        return position
     
     def jouer_un_tour(self):
         pass
@@ -35,5 +42,7 @@ class Poisson:
         pass
 
 
-monde = Monde(50, 40)
+monde = Monde(10, 8)
 monde.afficher_monde()
+
+print(monde.peupler)
