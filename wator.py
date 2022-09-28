@@ -48,9 +48,9 @@ class Requin:
             list.append[monde[self.y][self.x]]
         if monde[self.y - 1][self.x] == "_":
             list.append[monde[self.y][self.x]]
-        if monde[self.y][self.x + 1] :
+        if monde[self.y][self.x + 1] == "_" :
             list.append[monde[self.y][self.x + 1]]
-        if monde[monde[self.y][self.x - 1]] :
+        if monde[monde[self.y][self.x - 1]] == "_" :
             list.append[monde[self.y][self.x - 1]]
 
 
