@@ -56,9 +56,6 @@ class Monde:
                 if self.grille[y_random][x_random] == "_" :
                     self.grille[y_random][x_random] = Requin(x_random, y_random)
                     break
-            
-
-            
     
     def jouer_un_tour(self):
         pass
@@ -121,19 +118,65 @@ class Requin:
         if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
             list.append(((self.x + 1) % monde.largeur, self.y))
 
+        if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "P":
+            list.append((self.x, (self.y + 1 ) % monde.hauteur))
+
+        if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "P":
+            list.append((self.x, (self.y - 1 ) % monde.hauteur))
+
+        if monde.grille[self.y][(self.x + 1) % monde.largeur] == "P" :
+            list.append(((self.x + 1) % monde.largeur, self.y))
+
+        if monde.grille[self.y][(self.x - 1) % monde.largeur] == "P" :
+            list.append(((self.x + 1) % monde.largeur, self.y))
+
         return list
 
     def se_deplacer(self, monde):
-        pass
-        
+        coups_possible = self.deplacement_possible(monde)
+        if coups_possible == "P" :
+            coup_a_jouer = choice(coups_possible)
+            x_coup = coup_a_jouer[0]
+            y_coup = coup_a_jouer[1]
+
+            x_preced = self.x
+            y_preced = self.y
+
+            self.x = x_coup
+            self.y = y_coup
+            monde.grille[y_coup][x_coup] = self
+
+        elif len(coups_possible) != 0 :
+            coup_a_jouer = choice(coups_possible)
+            x_coup = coup_a_jouer[0]
+            y_coup = coup_a_jouer[1]
+
+            x_preced = self.x
+            y_preced = self.y
+
+            self.x = x_coup
+            self.y = y_coup
+            monde.grille[y_coup][x_coup] = self
+
+            if self.requin_repro >= 8 :
+                monde.grille[y_preced][x_preced] = Requin(x_preced, y_preced)
+            else :
+                monde.grille[y_preced][x_preced] = "_"
+
+        return coup_a_jouer
     def vivre_une_journee(self, monde):
         pass
 
 monde = Monde(10, 8)
-monde.peupler(1, 1)
+monde.peupler(15, 1)
 monde.afficher_monde()
 
-for ligne in monde.grille :
-    for case in ligne :
-        if isinstance(case, Requin) :
-            print(case.deplacement_possible(monde))
+for i in range(5):
+    for ligne in monde.grille :
+        for case in ligne :
+            if isinstance(case, Requin) :
+                print(case.deplacement_possible(monde))
+                #print(case.se_deplacer(monde))
+                case.se_deplacer(monde)
+                print("------------------")
+                monde.afficher_monde()
