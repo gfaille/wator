@@ -105,36 +105,54 @@ class Requin:
 
     
     def deplacement_possible(self, monde):
+
         list = []
         if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "_":
+            list.append((self.x, (self.y + 1 ) % monde.hauteur))
+        if monde.grille[(self.y + 1) % monde.hauteur][self.x] == Poisson:
             list.append((self.x, (self.y + 1 ) % monde.hauteur))
 
         if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "_":
             list.append((self.x, (self.y - 1 ) % monde.hauteur))
+        if monde.grille[(self.y - 1) % monde.hauteur][self.x] == Poisson:
+            list.append((self.x, (self.y - 1 ) % monde.hauteur))
 
         if monde.grille[self.y][(self.x + 1) % monde.largeur] == "_" :
+            list.append(((self.x + 1) % monde.largeur, self.y))
+        if monde.grille[self.y][(self.x + 1) % monde.largeur] == Poisson :
             list.append(((self.x + 1) % monde.largeur, self.y))
 
         if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
             list.append(((self.x + 1) % monde.largeur, self.y))
-
-        if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "P":
-            list.append((self.x, (self.y + 1 ) % monde.hauteur))
-
-        if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "P":
-            list.append((self.x, (self.y - 1 ) % monde.hauteur))
-
-        if monde.grille[self.y][(self.x + 1) % monde.largeur] == "P" :
+        if monde.grille[self.y][(self.x - 1) % monde.largeur] == Poisson :
             list.append(((self.x + 1) % monde.largeur, self.y))
-
-        if monde.grille[self.y][(self.x - 1) % monde.largeur] == "P" :
-            list.append(((self.x + 1) % monde.largeur, self.y))
-
+      
         return list
 
     def se_deplacer(self, monde):
         coups_possible = self.deplacement_possible(monde)
-        if len(coups_possible) != 0 :
+        if coups_possible == 0 :
+            coups_a_jouer = choice(coups_possible)
+            x_coup = coups_a_jouer[0]
+            y_coup = coups_a_jouer[1]
+
+            x_preced = self.x
+            y_preced = self.y
+
+            self.x = x_coup
+            self.y = y_coup
+            monde.grille[y_coup][x_coup] = self
+
+            if self.requin_repro >= 8 :
+                monde.grille[y_preced][x_preced] = Requin(x_preced, y_preced)
+            else :
+                monde.grille[y_preced][x_preced] = "_"
+
+            return coups_a_jouer
+        else :
+            print("erreur")
+            
+        """elif len(coups_possible) != 0 :
             coup_a_jouer = choice(coups_possible)
             x_coup = coup_a_jouer[0]
             y_coup = coup_a_jouer[1]
@@ -150,8 +168,8 @@ class Requin:
                 monde.grille[y_preced][x_preced] = Requin(x_preced, y_preced)
             else :
                 monde.grille[y_preced][x_preced] = "_"
-
-        return coup_a_jouer
+            return coup_a_jouer
+"""
     def vivre_une_journee(self, monde):
         pass
 
