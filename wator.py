@@ -134,19 +134,7 @@ class Requin:
 
     def se_deplacer(self, monde):
         coups_possible = self.deplacement_possible(monde)
-        if coups_possible == "P" :
-            coup_a_jouer = choice(coups_possible)
-            x_coup = coup_a_jouer[0]
-            y_coup = coup_a_jouer[1]
-
-            x_preced = self.x
-            y_preced = self.y
-
-            self.x = x_coup
-            self.y = y_coup
-            monde.grille[y_coup][x_coup] = self
-
-        elif len(coups_possible) != 0 :
+        if len(coups_possible) != 0 :
             coup_a_jouer = choice(coups_possible)
             x_coup = coup_a_jouer[0]
             y_coup = coup_a_jouer[1]
@@ -171,12 +159,12 @@ monde = Monde(10, 8)
 monde.peupler(15, 1)
 monde.afficher_monde()
 
-for i in range(5):
-    for ligne in monde.grille :
-        for case in ligne :
-            if isinstance(case, Requin) :
-                print(case.deplacement_possible(monde))
-                #print(case.se_deplacer(monde))
-                case.se_deplacer(monde)
-                print("------------------")
-                monde.afficher_monde()
+
+for ligne in monde.grille :
+    for case in ligne :
+        if isinstance(case, Requin) :
+            print(case.deplacement_possible(monde))
+            #print(case.se_deplacer(monde))
+            case.se_deplacer(monde)
+print("------------------")
+monde.afficher_monde()
