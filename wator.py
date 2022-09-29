@@ -13,9 +13,7 @@ class Monde:
     
     def afficher_monde(self):
         for ligne in self.grille:
-            print(ligne)
-            """for case in ligne:
-                print(case)"""
+            print(ligne)          
 
     def peupler(self, nb_poisson:int, nb_requin:int):
         """Méthode pour initialiser la position des thon et des requins
@@ -103,3 +101,8 @@ class Requin:
 monde = Monde(10, 8)
 monde.peupler(1, 1)
 monde.afficher_monde()
+
+for ligne in monde.grille :
+    for case in ligne :
+        if isinstance(case, Requin) :
+            print(case.deplacement_possible(monde))
