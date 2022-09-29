@@ -1,4 +1,4 @@
-from random import randint, choice, random
+from random import randint, choice
 from time import sleep
 import os
 
@@ -79,16 +79,20 @@ class Requin:
 
     
     def deplacement_possible(self, monde):
-        list = [(self.y + 1, self.x), (self.y - 1, self.x), (self.y, self.x + 1), (self.y, self.x - 1)]
-        if monde[self.y + 1][self.x] == "_":
-            list.append[[self.y][self.x]]
-        if monde[self.y - 1][self.x] == "_":
-            list.append[[self.y][self.x]]
-        if monde[self.y][self.x + 1] == "_" :
-            list.append[[self.y][self.x + 1]]
-        if monde[monde[self.y][self.x - 1]] == "_" :
-            list.append[[self.y][self.x - 1]]
+        list = []
+        if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "_":
+            list.append((self.x, (self.y + 1 ) % monde.hauteur))
 
+        if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "_":
+            list.append((self.x, (self.y - 1 ) % monde.hauteur))
+
+        if monde.grille[self.y][(self.x + 1) % monde.largeur] == "_" :
+            list.append(((self.x + 1) % monde.largeur, self.y))
+
+        if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
+            list.append(((self.x + 1) % monde.largeur, self.y))
+
+        return list
 
     def se_deplacer(self, monde):
         pass
@@ -97,6 +101,5 @@ class Requin:
         pass
 
 monde = Monde(10, 8)
-monde.afficher_monde()
 monde.peupler(1, 1)
 monde.afficher_monde()
