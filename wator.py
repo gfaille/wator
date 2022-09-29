@@ -12,8 +12,20 @@ class Monde:
         pass
     
     def afficher_monde(self):
+
         for ligne in self.grille:
-            print(ligne)          
+
+            for case in ligne:
+
+                if isinstance(case, Poisson):
+                    print("P", end=" | ")
+                elif isinstance(case, Requin):
+                    print("R", end=" | ")
+                else:
+                    print ("_", end=" | ")
+
+            print("\n")
+
 
     def peupler(self, nb_poisson:int, nb_requin:int):
         """Méthode pour initialiser la position des thon et des requins
@@ -62,10 +74,29 @@ class Poisson:
         pass
     
     def se_deplacer(self, monde):
-        pass
+        coups_possibles = self.deplacement_possible(monde)
+        if len(coups_possibles) != 0:
+            coup_a_jouer = choice(coups_possibles)
+            print(coup_a_jouer)
+            x_coup = coup_a_jouer[0]
+            y_coup = coup_a_jouer[1]
+
+            x_preced = self.x
+            y_preced = self.y
+
+            self.x = x_coup
+            self.y = y_coup
+            monde.grille[y_coup][x_coup] = self
+
+            if self.compteur_repro >= 5:
+                monde.grille[y_preced][x_preced] = Poisson(x_preced, y_preced)
+                self.compteur_repro = 0
+            else:
+                monde.grille[y_preced][x_preced] = "_"
         
     def vivre_une_journee(self, monde):
-        pass
+        self.compteur_repro += 1
+        self.se_deplacer(monde)
 
 class Requin:
     def __init__(self, x, y):
