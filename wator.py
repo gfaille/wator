@@ -107,31 +107,32 @@ class Requin:
     def deplacement_possible(self, monde):
 
         list = []
+        manger = []
+
+        """ verification des déplacement possible. self.y pour la hauteur (haut bas), self.x pour la largeur(gauche droite) """
         if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "_":
             list.append((self.x, (self.y + 1 ) % monde.hauteur))
-        if monde.grille[(self.y + 1) % monde.hauteur][self.x] == Poisson:
-            list.append((self.x, (self.y + 1 ) % monde.hauteur))
-
         if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "_":
             list.append((self.x, (self.y - 1 ) % monde.hauteur))
-        if monde.grille[(self.y - 1) % monde.hauteur][self.x] == Poisson:
-            list.append((self.x, (self.y - 1 ) % monde.hauteur))
-
         if monde.grille[self.y][(self.x + 1) % monde.largeur] == "_" :
             list.append(((self.x + 1) % monde.largeur, self.y))
-        if monde.grille[self.y][(self.x + 1) % monde.largeur] == Poisson :
-            list.append(((self.x + 1) % monde.largeur, self.y))
-
         if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
             list.append(((self.x + 1) % monde.largeur, self.y))
-        if monde.grille[self.y][(self.x - 1) % monde.largeur] == Poisson :
-            list.append(((self.x + 1) % monde.largeur, self.y))
+        
+        if isinstance(monde.grille[(self.y + 1) % monde.hauteur][self.x], Poisson):
+            manger.append((self.x, (self.y + 1 ) % monde.hauteur))
+        if isinstance(monde.grille[(self.y - 1) % monde.hauteur][self.x], Poisson):
+            manger.append((self.x, (self.y - 1 ) % monde.hauteur))
+        if isinstance(monde.grille[self.y][(self.x + 1) % monde.largeur], Poisson):
+            manger.append(((self.x + 1) % monde.largeur, self.y))
+        if isinstance(monde.grille[self.y][(self.x - 1) % monde.largeur], Poisson):
+            manger.append(((self.x + 1) % monde.largeur, self.y))
       
-        return list
+        return list and manger
 
     def se_deplacer(self, monde):
         coups_possible = self.deplacement_possible(monde)
-        if coups_possible == 0 :
+        if len(coups_possible) != 0 :
             coups_a_jouer = choice(coups_possible)
             x_coup = coups_a_jouer[0]
             y_coup = coups_a_jouer[1]
