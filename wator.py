@@ -58,6 +58,9 @@ class Monde:
                 if self.grille[y_random][x_random] == "_" :
                     self.grille[y_random][x_random] = Requin(x_random, y_random)
                     break
+            
+
+            
     
     def jouer_un_tour(self):
 
@@ -132,65 +135,24 @@ class Requin:
         if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
             list.append(((self.x + 1) % monde.largeur, self.y))
 
-        if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "P":
-            list.append((self.x, (self.y + 1 ) % monde.hauteur))
-
-        if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "P":
-            list.append((self.x, (self.y - 1 ) % monde.hauteur))
-
-        if monde.grille[self.y][(self.x + 1) % monde.largeur] == "P" :
-            list.append(((self.x + 1) % monde.largeur, self.y))
-
-        if monde.grille[self.y][(self.x - 1) % monde.largeur] == "P" :
-            list.append(((self.x + 1) % monde.largeur, self.y))
-
         return list
 
     def se_deplacer(self, monde):
-        coups_possible = self.deplacement_possible(monde)
-        if len(coups_possible) != 0 :
-            coup_a_jouer = choice(coups_possible)
-            x_coup = coup_a_jouer[0]
-            y_coup = coup_a_jouer[1]
-
-            x_preced = self.x
-            y_preced = self.y
-
-            self.x = x_coup
-            self.y = y_coup
-            monde.grille[y_coup][x_coup] = self
-
-            if self.requin_repro >= 8 :
-                monde.grille[y_preced][x_preced] = Requin(x_preced, y_preced)
-            else :
-                monde.grille[y_preced][x_preced] = "_"
-
-        return coup_a_jouer
+        pass
+        
     def vivre_une_journee(self, monde):
         pass
 
 
 
 monde = Monde(10, 8)
-<<<<<<< HEAD
 monde.peupler(1, 1)
-
-=======
-monde.peupler(15, 1)
-monde.afficher_monde()
->>>>>>> 08b4edcbadd46031a23821e77f6ccdcc8faa5c10
 
 
 for ligne in monde.grille :
     for case in ligne :
         if isinstance(case, Requin) :
             print(case.deplacement_possible(monde))
-<<<<<<< HEAD
             monde.jouer_un_tour()
 
-=======
-            #print(case.se_deplacer(monde))
-            case.se_deplacer(monde)
-print("------------------")
->>>>>>> 08b4edcbadd46031a23821e77f6ccdcc8faa5c10
 monde.afficher_monde()
