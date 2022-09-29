@@ -19,8 +19,10 @@ class Monde:
 
                 if isinstance(case, Poisson):
                     print("P", end=" | ")
+
                 elif isinstance(case, Requin):
                     print("R", end=" | ")
+
                 else:
                     print ("_", end=" | ")
 
@@ -61,7 +63,19 @@ class Monde:
             
     
     def jouer_un_tour(self):
-        pass
+
+        liste_poisson = []
+
+        for ligne in self.grille:
+
+            for case in ligne:
+
+                if isinstance(case, Poisson):
+                    liste_poisson.append(ligne, case)
+
+            print(liste_poisson)
+
+        print(liste_poisson)
 
 
 class Poisson:
@@ -133,9 +147,12 @@ class Requin:
 
 monde = Monde(10, 8)
 monde.peupler(1, 1)
-monde.afficher_monde()
+
 
 for ligne in monde.grille :
     for case in ligne :
         if isinstance(case, Requin) :
             print(case.deplacement_possible(monde))
+            monde.jouer_un_tour()
+
+monde.afficher_monde()
