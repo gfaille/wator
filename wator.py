@@ -129,6 +129,8 @@ class Requin:
     def vivre_une_journee(self, monde):
         pass
 
+
+
 monde = Monde(10, 8)
 monde.peupler(1, 1)
 monde.afficher_monde()
