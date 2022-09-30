@@ -26,10 +26,10 @@ class Monde:
             for case in ligne:
 
                 if isinstance(case, Poisson):
-                    print("P", end=" | ")
+                    print(("P"), end=" | ")
 
                 elif isinstance(case, Requin):
-                    print("R", end=" | ")
+                    print(("R"), end=" | ")
 
                 else:
                     print ("_", end=" | ")
@@ -88,9 +88,7 @@ class Monde:
             requin.vivre_une_journee(self)
 
         self.afficher_monde()
-        #print(liste_poissons)
-        #print(liste_requins)
-
+        sleep(0.4)
 
 class Poisson:
     def __init__(self, x, y):
@@ -100,17 +98,20 @@ class Poisson:
     
     def deplacement_possible(self, monde):
 
+
         list = []
 
         """ verification des déplacement possible. self.y pour la hauteur (haut bas), self.x pour la largeur(gauche droite) """
+
+        """ verification des déplacement possible. self.y pour la hauteur (haut bas), self.x pour la largeur(gauche droite) """
         if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "_":
-                list.append((self.x, (self.y + 1 ) % monde.hauteur))
+                    list.append((self.x, (self.y + 1 ) % monde.hauteur))
 
         if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "_":
-                list.append((self.x, (self.y - 1 ) % monde.hauteur))
+                    list.append((self.x, (self.y - 1 ) % monde.hauteur))
 
         if monde.grille[self.y][(self.x + 1) % monde.largeur] == "_" :
-                list.append(((self.x + 1) % monde.largeur, self.y))
+                    list.append(((self.x + 1) % monde.largeur, self.y))
 
         if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
                 list.append(((self.x - 1) % monde.largeur, self.y))
@@ -122,8 +123,6 @@ class Poisson:
         if len(coups_possibles) != 0:
             coup_a_jouer = choice(coups_possibles)
             
-            # print(coup_a_jouer)
-           
             x_coup = coup_a_jouer[0]
             y_coup = coup_a_jouer[1]
 
@@ -192,7 +191,14 @@ class Requin:
                 enregistre x et y du coups
                 sauvegarder les ancien x et y 
             """
+        """ Méthode pour déplacer le requin sur une case (manger un poisson ou se deplacer sur une case vide)
+            condition pour verifier si se n'est pas egal a 0 alors :
+                enregistre dans la variable le coups a jouer 
+                enregistre x et y du coups
+                sauvegarder les ancien x et y 
+            """
         coups_possible = self.deplacement_possible(monde)
+
 
         if len(coups_possible) != 0 :
             coups_a_jouer = choice(coups_possible)
@@ -218,6 +224,9 @@ class Requin:
 
                 monde.grille[y_coup][x_coup] = self
                 self.requin_repro = 0
+
+                monde.grille[y_coup][x_coup] = self
+                self.requin_repro = 0
             else :
                 monde.grille[y_preced][x_preced] = "_"
 
@@ -233,7 +242,6 @@ class Requin:
             """
 
         self.se_deplacer(monde)
-        print(self.energie)
         if self.energie == 0 :
             monde.grille[self.y][self.x] = "_"
         self.requin_repro += 1
