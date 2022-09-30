@@ -100,9 +100,7 @@ class Requin:
         self.x = x
         self.y = y 
         self.requin_repro = 0
-        self.energie = 6
-
-
+        self.energie = 5
     
     def deplacement_possible(self, monde):
 
@@ -135,6 +133,12 @@ class Requin:
             return list
 
     def se_deplacer(self, monde):
+        """ Méthode pour déplacer le requin sur une case (manger un poisson ou se deplacer sur une case vide)
+            condition pour verifier si se n'est pas egal a 0 alors :
+                enregistre dans la variable le coups a jouer 
+                enregistre x et y du coups
+                sauvegarder les ancien x et y 
+            """
         coups_possible = self.deplacement_possible(monde)
         if len(coups_possible) != 0 :
             coups_a_jouer = choice(coups_possible)
@@ -148,37 +152,33 @@ class Requin:
             self.y = y_coup
             monde.grille[y_coup][x_coup] = self
 
+            # verifie si le requin a manger un poisson si oui alors gagne 1 energie sinon perd 1 energie
+            if isinstance(monde.grille[coups_a_jouer[0]][coups_a_jouer[1]], Poisson):
+                self.energie += 1
+            else :
+                self.energie -= 1
+
+            # si le requin est egale ou superieur a 8 alors se reproduit sinon laisse vide
             if self.requin_repro >= 8 :
                 monde.grille[y_preced][x_preced] = Requin(x_preced, y_preced)
             else :
                 monde.grille[y_preced][x_preced] = "_"
 
             return coups_a_jouer
-            
-        elif len(coups_possible) != 0 :
-            coup_a_jouer = choice(coups_possible)
-            x_coup = coup_a_jouer[0]
-            y_coup = coup_a_jouer[1]
 
-            x_preced = self.x
-            y_preced = self.y
-
-            self.x = x_coup
-            self.y = y_coup
-            monde.grille[y_coup][x_coup] = self
-
-            if self.requin_repro >= 8 :
-                monde.grille[y_preced][x_preced] = Requin(x_preced, y_preced)
-            else :
-                monde.grille[y_preced][x_preced] = "_"
-
-            return coup_a_jouer
-        
         else :
             return print("erreur")
 
     def vivre_une_journee(self, monde):
-        pass
+        """ vivre une journé au requin, 
+            verifie que son energie est a 0 :
+                il renvoi une case vide 
+            """
+
+        self.se_deplacer(monde)
+        print(self.energie)
+        if self.energie == 0 :
+            monde.grille[self.y][self.x] = "_"
 
 monde = Monde(10, 8)
 monde.peupler(15, 1)
@@ -189,7 +189,8 @@ for ligne in monde.grille :
     for case in ligne :
         if isinstance(case, Requin) :
             print(case.deplacement_possible(monde))
-            #print(case.se_deplacer(monde))
-            case.se_deplacer(monde)
+            #case.se_deplacer(monde)
+            case.vivre_une_journee(monde)
+
 print("------------------")
 monde.afficher_monde()
