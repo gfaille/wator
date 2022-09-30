@@ -3,15 +3,25 @@ from time import sleep
 import os
 
 class Monde:
-    def __init__(self, largeur, hauteur):
+
+    def __init__(self, largeur:int, hauteur:int):
+        """
+        Initialise le monde
+        :param largeur: Le nombre de colonnes souhaité
+        :param hauteur: Le nombre de lignes souhaité
+        """
+
         self.largeur = largeur
         self.hauteur = hauteur
         self.grille = [["_" for _ in range(largeur)] for _ in range(hauteur)]
+        #self.liste_poissons = []
+
 
     def __del__(self):
         pass
     
     def afficher_monde(self):
+        """Méthode pour afficher le monde, qui affichera un P ou un R dans la grille à l'emplacement des Poissons et des Requins"""
 
         for ligne in self.grille:
 
@@ -30,7 +40,8 @@ class Monde:
 
 
     def peupler(self, nb_poisson:int, nb_requin:int):
-        """Méthode pour initialiser la position des thon et des requins
+        """
+        Méthode pour définir la position des thon et des requins aléatoirement
         :param nb_poisson: Nombre de poisson à afficher dans la grille
         :param nb_requin: Nombre de requin à afficher dans la grille
         """
@@ -47,7 +58,6 @@ class Monde:
                     break
 
 
-
         for _ in range(nb_requin):  # Itère tout les requins
 
             while True:
@@ -58,24 +68,29 @@ class Monde:
                 if self.grille[y_random][x_random] == "_" :
                     self.grille[y_random][x_random] = Requin(x_random, y_random)
                     break
-            
-
-            
+              
     
     def jouer_un_tour(self):
+        """Créer les liste de poissons et de requins qui doivent jouer, puis leur fais jouer un tour"""
 
-        liste_poisson = []
+        liste_poissons = []
+        liste_requins = []
 
         for ligne in self.grille:
-
             for case in ligne:
-
                 if isinstance(case, Poisson):
-                    liste_poisson.append(ligne, case)
+                    liste_poissons.append(case)
+                if isinstance(case, Requin):
+                    liste_requins.append(case)
 
-            print(liste_poisson)
+        for poisson in liste_poissons:
+            poisson.vivre_une_journee(self)
 
-        print(liste_poisson)
+        for requin in liste_requins:
+            requin.vivre_une_journee(self)
+
+        print(liste_poissons)
+        print(liste_requins)
 
 
 class Poisson:
@@ -85,7 +100,32 @@ class Poisson:
         self.compteur_repro = 0
     
     def deplacement_possible(self, monde):
-        pass
+        list = []
+        if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "_":
+            list.append((self.x, (self.y + 1 ) % monde.hauteur))
+
+        if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "_":
+            list.append((self.x, (self.y - 1 ) % monde.hauteur))
+
+        if monde.grille[self.y][(self.x + 1) % monde.largeur] == "_" :
+            list.append(((self.x + 1) % monde.largeur, self.y))
+
+        if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
+            list.append(((self.x + 1) % monde.largeur, self.y))
+
+        if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "P":
+            list.append((self.x, (self.y + 1 ) % monde.hauteur))
+
+        if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "P":
+            list.append((self.x, (self.y - 1 ) % monde.hauteur))
+
+        if monde.grille[self.y][(self.x + 1) % monde.largeur] == "P" :
+            list.append(((self.x + 1) % monde.largeur, self.y))
+
+        if monde.grille[self.y][(self.x - 1) % monde.largeur] == "P" :
+            list.append(((self.x + 1) % monde.largeur, self.y))
+
+        return list
     
     def se_deplacer(self, monde):
         coups_possibles = self.deplacement_possible(monde)
@@ -116,38 +156,39 @@ class Requin:
     def __init__(self, x, y):
         self.x = x
         self.y = y 
-        self.requin_repro = 0
+        self.compteur_repro = 0
         self.energie = 6
 
 
     
     def deplacement_possible(self, monde):
         list = []
-        if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "_":
+
+        """ verifie si il y a un poisson dans une case. self.y pour la hauteur (haut bas), self.x pour la largeur(gauche droite) """
+        if isinstance(monde.grille[(self.y + 1) % monde.hauteur][self.x], Poisson):
             list.append((self.x, (self.y + 1 ) % monde.hauteur))
-
-        if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "_":
+            return list
+        elif isinstance(monde.grille[(self.y - 1) % monde.hauteur][self.x], Poisson):
             list.append((self.x, (self.y - 1 ) % monde.hauteur))
-
-        if monde.grille[self.y][(self.x + 1) % monde.largeur] == "_" :
+            return list
+        elif isinstance(monde.grille[self.y][(self.x + 1) % monde.largeur], Poisson):
             list.append(((self.x + 1) % monde.largeur, self.y))
-
-        if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
+            return list
+        elif isinstance(monde.grille[self.y][(self.x - 1) % monde.largeur], Poisson):
             list.append(((self.x + 1) % monde.largeur, self.y))
+            return list
+        else :
+            """ verification des déplacement possible. self.y pour la hauteur (haut bas), self.x pour la largeur(gauche droite) """
+            if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "_":
+                list.append((self.x, (self.y + 1 ) % monde.hauteur))
+            if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "_":
+                list.append((self.x, (self.y - 1 ) % monde.hauteur))
+            if monde.grille[self.y][(self.x + 1) % monde.largeur] == "_" :
+                list.append(((self.x + 1) % monde.largeur, self.y))
+            if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
+                list.append(((self.x + 1) % monde.largeur, self.y))
 
-        if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "P":
-            list.append((self.x, (self.y + 1 ) % monde.hauteur))
-
-        if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "P":
-            list.append((self.x, (self.y - 1 ) % monde.hauteur))
-
-        if monde.grille[self.y][(self.x + 1) % monde.largeur] == "P" :
-            list.append(((self.x + 1) % monde.largeur, self.y))
-
-        if monde.grille[self.y][(self.x - 1) % monde.largeur] == "P" :
-            list.append(((self.x + 1) % monde.largeur, self.y))
-
-        return list
+            return list
 
     def se_deplacer(self, monde):
         coups_possible = self.deplacement_possible(monde)
@@ -163,7 +204,7 @@ class Requin:
             self.y = y_coup
             monde.grille[y_coup][x_coup] = self
 
-            if self.requin_repro >= 8 :
+            if self.compteur_repro >= 8 :
                 monde.grille[y_preced][x_preced] = Requin(x_preced, y_preced)
             else :
                 monde.grille[y_preced][x_preced] = "_"
@@ -171,20 +212,22 @@ class Requin:
         return coup_a_jouer
         
     def vivre_une_journee(self, monde):
-        pass
+        self.compteur_repro += 1
+        self.se_deplacer(monde)
 
 
 
 monde = Monde(10, 8)
-monde.peupler(1, 1)
+monde.peupler(3, 2)
 monde.afficher_monde()
 
 
-for ligne in monde.grille :
+"""for ligne in monde.grille :
     for case in ligne :
         if isinstance(case, Requin) :
             print(case.deplacement_possible(monde))
             #print(case.se_deplacer(monde))
-            case.se_deplacer(monde)
+            case.se_deplacer(monde)"""
 print("------------------")
+monde.jouer_un_tour()
 monde.afficher_monde()
