@@ -77,15 +77,17 @@ class Monde:
             for case in ligne:
                 if isinstance(case, Poisson):
                     liste_poissons.append(case)
-                if isinstance(case, Requin):
-                    liste_requins.append(case)
-
         for poisson in liste_poissons:
             poisson.vivre_une_journee(self)
 
+        for ligne in self.grille:
+            for case in ligne:
+                if isinstance(case, Requin):
+                    liste_requins.append(case)
         for requin in liste_requins:
             requin.vivre_une_journee(self)
 
+        self.afficher_monde()
         #print(liste_poissons)
         #print(liste_requins)
 
@@ -119,7 +121,9 @@ class Poisson:
         coups_possibles = self.deplacement_possible(monde)
         if len(coups_possibles) != 0:
             coup_a_jouer = choice(coups_possibles)
-            print(coup_a_jouer)
+            
+            # print(coup_a_jouer)
+           
             x_coup = coup_a_jouer[0]
             y_coup = coup_a_jouer[1]
 
@@ -130,7 +134,7 @@ class Poisson:
             self.y = y_coup
             monde.grille[y_coup][x_coup] = self
 
-            if self.compteur_repro >= 5:
+            if self.compteur_repro >= 4:
                 monde.grille[y_preced][x_preced] = Poisson(x_preced, y_preced)
                 self.compteur_repro = 0
             else:
@@ -141,15 +145,15 @@ class Poisson:
             verifie que son energie est a 0 :
                 il renvoi une case vide 
             """
-
         self.se_deplacer(monde)
+        self.compteur_repro += 1
 
 class Requin:
     def __init__(self, x, y):
         self.x = x
         self.y = y 
         self.requin_repro = 0
-        self.energie = 5
+        self.energie = 6
     
     def deplacement_possible(self, monde):
 
@@ -202,14 +206,15 @@ class Requin:
             monde.grille[y_coup][x_coup] = self
 
             # verifie si le requin a manger un poisson si oui alors gagne 1 energie sinon perd 1 energie
-            if isinstance(monde.grille[coups_a_jouer[0]][coups_a_jouer[1]], Poisson):
+            if isinstance(monde.grille[y_coup][x_coup], Poisson):
                 self.energie += 1
             else :
                 self.energie -= 1
 
             # si le requin est egale ou superieur a 8 alors se reproduit sinon laisse vide
-            if self.requin_repro >= 8 :
+            if self.requin_repro >= 3 :
                 monde.grille[y_preced][x_preced] = Requin(x_preced, y_preced)
+                self.requin_repro = 0
             else :
                 monde.grille[y_preced][x_preced] = "_"
 
@@ -228,11 +233,12 @@ class Requin:
         print(self.energie)
         if self.energie == 0 :
             monde.grille[self.y][self.x] = "_"
+        self.requin_repro += 1
 
 monde = Monde(10, 8)
-monde.peupler(15, 1)
+monde.peupler(10, 10)
 monde.afficher_monde()
 
-print("------------------")
-monde.jouer_un_tour()
-monde.afficher_monde()
+for _ in range(50):
+    print("------------------")
+    monde.jouer_un_tour()
