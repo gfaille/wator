@@ -113,7 +113,7 @@ class Poisson:
                 list.append(((self.x + 1) % monde.largeur, self.y))
 
         if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
-                list.append(((self.x + 1) % monde.largeur, self.y))
+                list.append(((self.x - 1) % monde.largeur, self.y))
 
         return list
     
@@ -134,7 +134,7 @@ class Poisson:
             self.y = y_coup
             monde.grille[y_coup][x_coup] = self
 
-            if self.compteur_repro >= 4:
+            if self.compteur_repro >= 3:
                 monde.grille[y_preced][x_preced] = Poisson(x_preced, y_preced)
                 self.compteur_repro = 0
             else:
@@ -170,7 +170,7 @@ class Requin:
             list.append(((self.x + 1) % monde.largeur, self.y))
             return list
         elif isinstance(monde.grille[self.y][(self.x - 1) % monde.largeur], Poisson):
-            list.append(((self.x + 1) % monde.largeur, self.y))
+            list.append(((self.x - 1) % monde.largeur, self.y))
             return list
         else :
             """ verification des déplacement possible. self.y pour la hauteur (haut bas), self.x pour la largeur(gauche droite) """
@@ -181,7 +181,7 @@ class Requin:
             if monde.grille[self.y][(self.x + 1) % monde.largeur] == "_" :
                 list.append(((self.x + 1) % monde.largeur, self.y))
             if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
-                list.append(((self.x + 1) % monde.largeur, self.y))
+                list.append(((self.x - 1) % monde.largeur, self.y))
 
             return list
 
@@ -193,14 +193,15 @@ class Requin:
                 sauvegarder les ancien x et y 
             """
         coups_possible = self.deplacement_possible(monde)
+        print(coups_possible)
         if len(coups_possible) != 0 :
             coups_a_jouer = choice(coups_possible)
             x_coup = coups_a_jouer[0]
             y_coup = coups_a_jouer[1]
-
+            print(x_coup + y_coup)
             x_preced = self.x
             y_preced = self.y
-
+            print(x_preced + y_preced)
             self.x = x_coup
             self.y = y_coup
             monde.grille[y_coup][x_coup] = self
@@ -212,8 +213,10 @@ class Requin:
                 self.energie -= 1
 
             # si le requin est egale ou superieur a 8 alors se reproduit sinon laisse vide
-            if self.requin_repro >= 3 :
+            if self.requin_repro >= 5 :
                 monde.grille[y_preced][x_preced] = Requin(x_preced, y_preced)
+
+                monde.grille[y_coup][x_coup] = self
                 self.requin_repro = 0
             else :
                 monde.grille[y_preced][x_preced] = "_"
@@ -236,9 +239,9 @@ class Requin:
         self.requin_repro += 1
 
 monde = Monde(10, 8)
-monde.peupler(10, 10)
+monde.peupler(15, 10)
 monde.afficher_monde()
 
-for _ in range(50):
+for _ in range(100):
     print("------------------")
     monde.jouer_un_tour()
