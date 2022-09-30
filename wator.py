@@ -1,5 +1,6 @@
 from random import randint, choice
 from time import sleep
+from termcolor import colored #pip install termcolor
 import os
 
 class Monde:
@@ -26,10 +27,10 @@ class Monde:
             for case in ligne:
 
                 if isinstance(case, Poisson):
-                    print(("P"), end=" | ")
+                    print(colored("P", "blue"), end=" | ")
 
                 elif isinstance(case, Requin):
-                    print(("R"), end=" | ")
+                    print(colored("R", "red"), end=" | ")
 
                 else:
                     print ("_", end=" | ")
