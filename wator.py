@@ -1,5 +1,6 @@
 from random import randint, choice
 from time import sleep
+from termcolor import colored #pip install termcolor
 import os
 
 class Monde:
@@ -14,8 +15,6 @@ class Monde:
         self.largeur = largeur
         self.hauteur = hauteur
         self.grille = [["_" for _ in range(largeur)] for _ in range(hauteur)]
-        #self.liste_poissons = []
-
 
     def __del__(self):
         pass
@@ -28,10 +27,10 @@ class Monde:
             for case in ligne:
 
                 if isinstance(case, Poisson):
-                    print("P", end=" | ")
+                    print(colored("P", "blue"), end=" | ")
 
                 elif isinstance(case, Requin):
-                    print("R", end=" | ")
+                    print(colored("R", "red"), end=" | ")
 
                 else:
                     print ("_", end=" | ")
@@ -68,7 +67,6 @@ class Monde:
                 if self.grille[y_random][x_random] == "_" :
                     self.grille[y_random][x_random] = Requin(x_random, y_random)
                     break
-              
     
     def jouer_un_tour(self):
         """Créer les liste de poissons et de requins qui doivent jouer, puis leur fais jouer un tour"""
@@ -89,8 +87,10 @@ class Monde:
         for requin in liste_requins:
             requin.vivre_une_journee(self)
 
-        print(liste_poissons)
-        print(liste_requins)
+        self.afficher_monde()
+        sleep(2)
+        #print(liste_poissons)
+        #print(liste_requins)
 
 
 class Poisson:
@@ -100,30 +100,21 @@ class Poisson:
         self.compteur_repro = 0
     
     def deplacement_possible(self, monde):
+
         list = []
+
+        """ verification des déplacement possible. self.y pour la hauteur (haut bas), self.x pour la largeur(gauche droite) """
         if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "_":
-            list.append((self.x, (self.y + 1 ) % monde.hauteur))
+                list.append((self.x, (self.y + 1 ) % monde.hauteur))
 
         if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "_":
-            list.append((self.x, (self.y - 1 ) % monde.hauteur))
+                list.append((self.x, (self.y - 1 ) % monde.hauteur))
 
         if monde.grille[self.y][(self.x + 1) % monde.largeur] == "_" :
-            list.append(((self.x + 1) % monde.largeur, self.y))
+                list.append(((self.x + 1) % monde.largeur, self.y))
 
         if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
-            list.append(((self.x + 1) % monde.largeur, self.y))
-
-        if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "P":
-            list.append((self.x, (self.y + 1 ) % monde.hauteur))
-
-        if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "P":
-            list.append((self.x, (self.y - 1 ) % monde.hauteur))
-
-        if monde.grille[self.y][(self.x + 1) % monde.largeur] == "P" :
-            list.append(((self.x + 1) % monde.largeur, self.y))
-
-        if monde.grille[self.y][(self.x - 1) % monde.largeur] == "P" :
-            list.append(((self.x + 1) % monde.largeur, self.y))
+                list.append(((self.x - 1) % monde.largeur, self.y))
 
         return list
     
@@ -131,7 +122,9 @@ class Poisson:
         coups_possibles = self.deplacement_possible(monde)
         if len(coups_possibles) != 0:
             coup_a_jouer = choice(coups_possibles)
-            print(coup_a_jouer)
+            
+            # print(coup_a_jouer)
+           
             x_coup = coup_a_jouer[0]
             y_coup = coup_a_jouer[1]
 
@@ -142,26 +135,30 @@ class Poisson:
             self.y = y_coup
             monde.grille[y_coup][x_coup] = self
 
-            if self.compteur_repro >= 5:
+            if self.compteur_repro >= 4:
                 monde.grille[y_preced][x_preced] = Poisson(x_preced, y_preced)
                 self.compteur_repro = 0
             else:
                 monde.grille[y_preced][x_preced] = "_"
-        
+
     def vivre_une_journee(self, monde):
-        self.compteur_repro += 1
+        """ vivre une journé au poisson, 
+            verifie que son energie est a 0 :
+                il renvoi une case vide 
+            """
+
         self.se_deplacer(monde)
+        self.compteur_repro += 1
 
 class Requin:
     def __init__(self, x, y):
         self.x = x
         self.y = y 
-        self.compteur_repro = 0
-        self.energie = 6
-
-
+        self.requin_repro = 0
+        self.energie = 7
     
     def deplacement_possible(self, monde):
+
         list = []
 
         """ verifie si il y a un poisson dans une case. self.y pour la hauteur (haut bas), self.x pour la largeur(gauche droite) """
@@ -175,7 +172,7 @@ class Requin:
             list.append(((self.x + 1) % monde.largeur, self.y))
             return list
         elif isinstance(monde.grille[self.y][(self.x - 1) % monde.largeur], Poisson):
-            list.append(((self.x + 1) % monde.largeur, self.y))
+            list.append(((self.x - 1) % monde.largeur, self.y))
             return list
         else :
             """ verification des déplacement possible. self.y pour la hauteur (haut bas), self.x pour la largeur(gauche droite) """
@@ -186,16 +183,23 @@ class Requin:
             if monde.grille[self.y][(self.x + 1) % monde.largeur] == "_" :
                 list.append(((self.x + 1) % monde.largeur, self.y))
             if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
-                list.append(((self.x + 1) % monde.largeur, self.y))
+                list.append(((self.x - 1) % monde.largeur, self.y))
 
             return list
 
     def se_deplacer(self, monde):
+        """ Méthode pour déplacer le requin sur une case (manger un poisson ou se deplacer sur une case vide)
+            condition pour verifier si se n'est pas egal a 0 alors :
+                enregistre dans la variable le coups a jouer 
+                enregistre x et y du coups
+                sauvegarder les ancien x et y 
+            """
         coups_possible = self.deplacement_possible(monde)
+
         if len(coups_possible) != 0 :
-            coup_a_jouer = choice(coups_possible)
-            x_coup = coup_a_jouer[0]
-            y_coup = coup_a_jouer[1]
+            coups_a_jouer = choice(coups_possible)
+            x_coup = coups_a_jouer[0]
+            y_coup = coups_a_jouer[1]
 
             x_preced = self.x
             y_preced = self.y
@@ -204,30 +208,44 @@ class Requin:
             self.y = y_coup
             monde.grille[y_coup][x_coup] = self
 
-            if self.compteur_repro >= 8 :
+            # verifie si le requin a manger un poisson si oui alors gagne 1 energie sinon perd 1 energie
+            if isinstance(monde.grille[y_coup][x_coup], Poisson):
+                self.energie += 1
+            else :
+                self.energie -= 1
+
+            # si le requin est egale ou superieur a 8 alors se reproduit sinon laisse vide
+            if self.requin_repro >= 6 :
                 monde.grille[y_preced][x_preced] = Requin(x_preced, y_preced)
+
+                monde.grille[y_coup][x_coup] = self
+                self.requin_repro = 0
             else :
                 monde.grille[y_preced][x_preced] = "_"
 
-        return coup_a_jouer
-        
+            return coups_a_jouer
+
+        else :
+            return print("erreur")
+
     def vivre_une_journee(self, monde):
-        self.compteur_repro += 1
+        """ vivre une journé au requin, 
+            verifie que son energie est a 0 :
+                il renvoi une case vide 
+            """
+
         self.se_deplacer(monde)
-
-
+        print(self.energie)
+        if self.energie == 0 :
+            monde.grille[self.y][self.x] = "_"
+        self.requin_repro += 1
+        
 
 monde = Monde(10, 8)
-monde.peupler(3, 2)
+monde.peupler(15, 5)
 monde.afficher_monde()
 
+for _ in range(100):
 
-"""for ligne in monde.grille :
-    for case in ligne :
-        if isinstance(case, Requin) :
-            print(case.deplacement_possible(monde))
-            #print(case.se_deplacer(monde))
-            case.se_deplacer(monde)"""
-print("------------------")
-monde.jouer_un_tour()
-monde.afficher_monde()
+    print("------------------")
+    monde.jouer_un_tour()
