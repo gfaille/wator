@@ -3,7 +3,14 @@ from time import sleep
 import os
 
 class Monde:
-    def __init__(self, largeur, hauteur):
+
+    def __init__(self, largeur:int, hauteur:int):
+        """
+        Initialise le monde
+        :param largeur: Le nombre de colonnes souhaité
+        :param hauteur: Le nombre de lignes souhaité
+        """
+
         self.largeur = largeur
         self.hauteur = hauteur
         self.grille = [["_" for _ in range(largeur)] for _ in range(hauteur)]
@@ -12,6 +19,7 @@ class Monde:
         pass
     
     def afficher_monde(self):
+        """Méthode pour afficher le monde, qui affichera un P ou un R dans la grille à l'emplacement des Poissons et des Requins"""
 
         for ligne in self.grille:
 
@@ -19,8 +27,10 @@ class Monde:
 
                 if isinstance(case, Poisson):
                     print("P", end=" | ")
+
                 elif isinstance(case, Requin):
                     print("R", end=" | ")
+
                 else:
                     print ("_", end=" | ")
 
@@ -28,7 +38,8 @@ class Monde:
 
 
     def peupler(self, nb_poisson:int, nb_requin:int):
-        """Méthode pour initialiser la position des thon et des requins
+        """
+        Méthode pour définir la position des thon et des requins aléatoirement
         :param nb_poisson: Nombre de poisson à afficher dans la grille
         :param nb_requin: Nombre de requin à afficher dans la grille
         """
@@ -45,7 +56,6 @@ class Monde:
                     break
 
 
-
         for _ in range(nb_requin):  # Itère tout les requins
 
             while True:
@@ -58,7 +68,26 @@ class Monde:
                     break
     
     def jouer_un_tour(self):
-        pass
+        """Créer les liste de poissons et de requins qui doivent jouer, puis leur fais jouer un tour"""
+
+        liste_poissons = []
+        liste_requins = []
+
+        for ligne in self.grille:
+            for case in ligne:
+                if isinstance(case, Poisson):
+                    liste_poissons.append(case)
+                if isinstance(case, Requin):
+                    liste_requins.append(case)
+
+        for poisson in liste_poissons:
+            poisson.vivre_une_journee(self)
+
+        for requin in liste_requins:
+            requin.vivre_une_journee(self)
+
+        #print(liste_poissons)
+        #print(liste_requins)
 
 
 class Poisson:
@@ -68,7 +97,23 @@ class Poisson:
         self.compteur_repro = 0
     
     def deplacement_possible(self, monde):
-        pass
+
+        list = []
+
+        """ verification des déplacement possible. self.y pour la hauteur (haut bas), self.x pour la largeur(gauche droite) """
+        if monde.grille[(self.y + 1) % monde.hauteur][self.x] == "_":
+                list.append((self.x, (self.y + 1 ) % monde.hauteur))
+
+        if monde.grille[(self.y - 1) % monde.hauteur][self.x] == "_":
+                list.append((self.x, (self.y - 1 ) % monde.hauteur))
+
+        if monde.grille[self.y][(self.x + 1) % monde.largeur] == "_" :
+                list.append(((self.x + 1) % monde.largeur, self.y))
+
+        if monde.grille[self.y][(self.x - 1) % monde.largeur] == "_" :
+                list.append(((self.x + 1) % monde.largeur, self.y))
+
+        return list
     
     def se_deplacer(self, monde):
         coups_possibles = self.deplacement_possible(monde)
@@ -90,9 +135,13 @@ class Poisson:
                 self.compteur_repro = 0
             else:
                 monde.grille[y_preced][x_preced] = "_"
-        
+
     def vivre_une_journee(self, monde):
-        self.compteur_repro += 1
+        """ vivre une journé au poisson, 
+            verifie que son energie est a 0 :
+                il renvoi une case vide 
+            """
+
         self.se_deplacer(monde)
 
 class Requin:
@@ -184,13 +233,6 @@ monde = Monde(10, 8)
 monde.peupler(15, 1)
 monde.afficher_monde()
 
-
-for ligne in monde.grille :
-    for case in ligne :
-        if isinstance(case, Requin) :
-            print(case.deplacement_possible(monde))
-            #case.se_deplacer(monde)
-            case.vivre_une_journee(monde)
-
 print("------------------")
+monde.jouer_un_tour()
 monde.afficher_monde()
