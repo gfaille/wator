@@ -1,4 +1,3 @@
-from curses import noecho
 from random import randint, choice
 from time import sleep
 from termcolor import colored #pip install termcolor
